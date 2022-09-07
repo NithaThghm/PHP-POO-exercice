@@ -2,7 +2,8 @@
 
 class Qcm
 {
-    private $form;
+    private string $form;
+    private array $questions=[];
 
     public function __construct()
     {
@@ -13,21 +14,18 @@ class Qcm
 
     public function ajouterQuestion(Question $question, string $id, string $name): void
     {
-        $this->form .= "<label>Question : " . $question->getQuestion() . "</label><br/><br/>";
-        //var_dump($question -> getPropositions());
-        foreach ($question->getPropositions() as $choix) {
-            var_dump($choix->getProposition());
-            $this->form .= "<label id ='$id' name='$name'>".$choix->getProposition()."</label><input id= '$id' name='$name' type='radio' value =".$choix->getValidation()."><br/><br/>";
-        }
+        $this->questions[] = $question;
+
     }
 
+
     //Suleyman : Coder méthode setAppreciation :
-    public function setAppreciation(Array $notes){
-        foreach ($notes as $note){
-            if ($note < 10){
+    public function setAppreciation(array $notes)
+    {
+        foreach ($notes as $note) {
+            if ($note < 10) {
                 $this->form .= "<p>NUL !</p>";
-            }
-            else{
+            } else {
                 $this->form .= "<p>BON !</p>";
             }
         }
@@ -37,10 +35,24 @@ class Qcm
 
     public function generer()
     {
-        return $this->form .= "
+        foreach ($this->questions as $questionSet){
+            $this->form .= "<br/><p>Question : " . $questionSet->getQuestion() . "</p>";
+            //var_dump($questionSet->getPropositions());
+            foreach($questionSet->getPropositions() as $propositionSet){
+                var_dump($propositionSet->getProposition());
+                $this->form .="<input name='".$questionSet->getQuestion()."' type='radio' value='".$propositionSet->getProposition()."'><label id='".$questionSet->getQuestion()."'>".$propositionSet->getProposition()."</label><br/>";
+            }
+        }
+
+
+        $this->form .= "
+            <br/>
             <button type ='submit'>Valider</button>
+            <br/>
            </fieldset>
         </form>";
+
+        return $this->form;
     }
 }
 
@@ -75,8 +87,6 @@ class Question
     {
         return $this->question;
     }
-
-
 
 }
 
@@ -123,7 +133,7 @@ $question2->setExplications('Sans commentaires si vous avez eu faux :-°');
 $qcm->ajouterQuestion($question2, "question2", "question2");
 
 echo $qcm->generer();
-echo '$_POST :'.var_dump($_POST);
+echo '$_POST :' . var_dump($_POST);
 
 
 
