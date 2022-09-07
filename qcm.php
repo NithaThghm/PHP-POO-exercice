@@ -3,7 +3,7 @@
 class Qcm
 {
     private string $form;
-    private array $questions=[];
+    private array $questions = [];
     public integer $note;
 
     public function __construct()
@@ -19,25 +19,27 @@ class Qcm
     }
 
     //Suleyman : Coder méthode setAppreciation :
-    public function setAppreciation(array $array){
-        if($this->note== 0){
-            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[0] ."</p>";
+    public function setAppreciation(array $array)
+    {
+        if ($this->note == 0) {
+            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[0] . "</p>";
         }
-        if($this->note == 10){
-            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[5] ."</p>";
+        if ($this->note == 10) {
+            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[5] . "</p>";
         }
-        if($this->note == 20){
-            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[10] ."</p>";
+        if ($this->note == 20) {
+            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[10] . "</p>";
         }
-        if($this->note == 30){
-            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[15] ."</p>";
+        if ($this->note == 30) {
+            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[15] . "</p>";
         }
-        if($this->note == 40){
-            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[20] ."</p>";
+        if ($this->note == 40) {
+            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[20] . "</p>";
         }
     }
 
-    public function ajouterpoint(){
+    public function ajouterpoint()
+    {
         $this->note += 10;
         return $this->note;
     }
@@ -46,29 +48,23 @@ class Qcm
 
     public function generer()
     {
-        //var_dump($this->questions);
 
-        foreach ($this->questions as $key => $value){
-            $this->form .= "<br/><p>Question :".$value->getQuestion()."</p>";
+        foreach ($this->questions as $key => $value) {
+            $this->form .= "<br/><p>Question : " . $value->getQuestion() . "</p>";
 
-            foreach($value->getPropositions() as $propositionSet){
-                $this->form .="<input name='$key' type='radio' value='".$propositionSet->getProposition()."'><label id='$key'>".$propositionSet->getProposition()."</label><br/>";
+            foreach ($value->getPropositions() as $propositionSet) {
+                $this->form .= "<input name='$key' type='radio' value='" . $propositionSet->getProposition() . "'><label id='$key'>" . $propositionSet->getProposition() . "</label><br/>";
             }
 
-            if(isset($_POST) && !empty($_POST)){
-                foreach($_POST as $key => $value){
-
-                    foreach($this->questions as $key2 => $value2){
-                        if($key == $key2){
-                            //var_dump($value2->getPropositions());
-                            foreach($value2->getPropositions() as $propositionSet){
-                                if($value == $propositionSet->getProposition()){
-                                    var_dump($propositionSet->getProposition());
-                                    /**if($propositionSet->getValidation()){
-                                        $this->form.="<p>'".$value2->getExplication()."'</p>";
-                                    }else{
-                                        $this->form.="<p>Désolé, ce n'est pas la bonne réponse</p>";
-                                    }*/
+            if (isset($_POST) && !empty($_POST)) {
+                foreach ($_POST as $key2 => $value2) {
+                    if ($key2 == $key) {
+                        foreach ($value->getPropositions() as $propositionSet) {
+                            if ($value2 == $propositionSet->getProposition()) {
+                                if ($propositionSet->getValidation()) {
+                                    $this->form .= "<p>'" . $value->getExplication() . "'</p>";
+                                } else {
+                                    $this->form .= "<p>Désolé, mauvaise réponse</p>";
                                 }
                             }
                         }
@@ -76,8 +72,6 @@ class Qcm
                 }
             }
         }
-
-
 
         $this->form .= "
             <br/>
@@ -87,6 +81,7 @@ class Qcm
         </form>";
 
         return $this->form;
+
     }
 }
 
@@ -172,6 +167,7 @@ $question2->setExplications('Sans commentaires si vous avez eu faux :-°');
 $qcm->ajouterQuestion($question2, "question2", "question2");
 
 echo $qcm->generer();
+var_dump($_POST);
 
 
 
