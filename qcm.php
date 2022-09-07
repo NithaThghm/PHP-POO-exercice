@@ -2,30 +2,43 @@
 
 class Qcm
 {
-    protected $form;
+    private $form;
 
-    public function __construct(){
-        $this -> form =
+    public function __construct()
+    {
+        $this->form =
             "<form method ='post'>
                 <fieldset>";
     }
 
     public function ajouterQuestion(Question $question, string $id, string $name): void
     {
-        $this -> form .= "<label>Question : ".$question -> getQuestion()."</label><br/><br/>";
-        //var_dump($question -> getReponses());
-        foreach($question -> getReponses() as $choix){
-            var_dump($choix -> proposition);
-            $this -> form .= "<label>".$choix -> proposition."</label>
-                              <input type='radio' value ='$choix->reponse'>
-                              <br/><br/>";
+        $this->form .= "<label>Question : " . $question->getQuestion() . "</label><br/><br/>";
+        //var_dump($question -> getPropositions());
+        foreach ($question->getPropositions() as $choix) {
+            var_dump($choix->getProposition());
+            $this->form .= "<label id ='$id' name='$name'>".$choix->getProposition()."</label><input id= '$id' name='$name' type='radio' value =".$choix->getValidation()."><br/><br/>";
         }
     }
 
+    //Suleyman : Coder méthode setAppreciation :
+    public function setAppreciation(Array $notes){
+        foreach ($notes as $note){
+            if ($note < 10){
+                $this->form .= "<p>NUL !</p>";
+            }
+            else{
+                $this->form .= "<p>BON !</p>";
+            }
+        }
+    }
+
+    //Fin code Suleyman
+
     public function generer()
     {
-        return $this -> form .= "
-            <button type = 'post'>Valider</button>
+        return $this->form .= "
+            <button type ='submit'>Valider</button>
            </fieldset>
         </form>";
     }
@@ -33,33 +46,37 @@ class Qcm
 
 class Question
 {
-    public $question;
-    public $reponses = [];
-    public $explication;
+    private string $question;
+    private array $propositions = [];
+    private string $explication;
 
     public function __construct(string $question)
     {
-        $this -> question = $question;
+        $this->question = $question;
+
     }
 
     public function ajouterReponse(Reponse $reponse): void
     {
-        $this -> reponses[] = $reponse;
+        $this->propositions[] = $reponse;
     }
 
-    public function setExplications(string $explication)
+    public function setExplications(string $explication): void
     {
-        $this -> explication = $explication;
+        $this->explication = $explication;
     }
 
-    public function getReponses()
+    public function getPropositions()
     {
-        return $this -> reponses;
+        return $this->propositions;
     }
 
-    public function getQuestion(){
-        return $this -> question;
+    public function getQuestion()
+    {
+        return $this->question;
     }
+
+
 
 }
 
@@ -68,14 +85,25 @@ class Reponse
     const BONNE_REPONSE = true;
     const MAUVAISE_REPONSE = false;
 
-    public $proposition;
-    public $reponse;
+    private string $proposition;
+    private bool $validation;
 
-    public function __construct(string $proposition, bool $reponse = Reponse::MAUVAISE_REPONSE)
+    public function __construct(string $proposition, bool $validation = Reponse::MAUVAISE_REPONSE)
     {
-       $this -> proposition = $proposition;
-       $this -> reponse = $reponse;
+        $this->proposition = $proposition;
+        $this->validation = $validation;
     }
+
+    public function getProposition(): string
+    {
+        return $this->proposition;
+    }
+
+    public function getValidation(): bool
+    {
+        return $this->validation;
+    }
+
 }
 
 $qcm = new Qcm();
@@ -92,10 +120,10 @@ $question2->ajouterReponse(new Reponse('Php Orienté Objet'));
 $question2->ajouterReponse(new Reponse('ProgrammatiOn Orientée'));
 $question2->ajouterReponse(new Reponse('Programmation Orientée Objet', Reponse::BONNE_REPONSE));
 $question2->setExplications('Sans commentaires si vous avez eu faux :-°');
-$qcm->ajouterQuestion($question2,"question2", "question2");
+$qcm->ajouterQuestion($question2, "question2", "question2");
 
 echo $qcm->generer();
-var_dump($_POST);
+echo '$_POST :'.var_dump($_POST);
 
 
 
