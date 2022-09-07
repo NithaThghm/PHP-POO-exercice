@@ -4,7 +4,8 @@ class Qcm
 {
     private string $form;
     private array $questions = [];
-    public integer $note;
+    private array $appreciation = [];
+    private float $userNote = 0;
 
     public function __construct()
     {
@@ -19,50 +20,46 @@ class Qcm
     }
 
     //Suleyman : Coder méthode setAppreciation :
-    public function setAppreciation(array $array)
+    public function setAppreciation(array $appreciation)
     {
-        if ($this->note == 0) {
-            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[0] . "</p>";
-        }
-        if ($this->note == 10) {
-            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[5] . "</p>";
-        }
-        if ($this->note == 20) {
-            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[10] . "</p>";
-        }
-        if ($this->note == 30) {
-            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[15] . "</p>";
-        }
-        if ($this->note == 40) {
-            $this->form .= "<p>Note : " . $this->note / 40 * 20 . "/20 " . $array[20] . "</p>";
+        foreach ($appreciation as $key => $appr) {
+            if (is_numeric($key))
+                $this->appreciation[(int) $key] = $appr;
+            else {
+                list($min, $max) = explode('-', $key);
+                if ($min > $max)
+                    list($min, $max) = array($max, $min);
+                for ($i = (int)$min; $i <= $max; $i++)
+                    $this->appreciation[$i] = $appr;
+            }
         }
     }
 
-    public function ajouterpoint()
-    {
-        $this->note += 10;
-        return $this->note;
-    }
 
     //Fin code Suleyman
 
     public function generer()
     {
+        $note = 20/count($this->questions);
+        var_dump($note);
+        var_dump($this->userNote);
 
         foreach ($this->questions as $key => $value) {
-            $this->form .= "<br/><p>Question : " . $value->getQuestion() . "</p>";
+            $this->form .= "<p>Question : " . $value->getQuestion() . "</p>";
 
             foreach ($value->getPropositions() as $propositionSet) {
                 $this->form .= "<input name='$key' type='radio' value='" . $propositionSet->getProposition() . "'><label id='$key'>" . $propositionSet->getProposition() . "</label><br/>";
             }
 
             if (isset($_POST) && !empty($_POST)) {
+
                 foreach ($_POST as $key2 => $value2) {
                     if ($key2 == $key) {
                         foreach ($value->getPropositions() as $propositionSet) {
                             if ($value2 == $propositionSet->getProposition()) {
                                 if ($propositionSet->getValidation()) {
                                     $this->form .= "<p>'" . $value->getExplication() . "'</p>";
+                                    $this->userNote =  $this->userNote + $note;
                                 } else {
                                     $this->form .= "<p>Désolé, mauvaise réponse</p>";
                                 }
@@ -71,7 +68,14 @@ class Qcm
                     }
                 }
             }
+
+            $this->form .= "<hr/>";
         }
+
+        if(isset($_POST) && !empty($_POST)){
+            $this->form.="<p>Vous avez obtenu une note de : ".$this->userNote."/20</p><p>Appréciation : ".$this->appreciation[$this->userNote]."</p><hr/>";
+        }
+
 
         $this->form .= "
             <br/>
@@ -165,6 +169,8 @@ $question2->ajouterReponse(new Reponse('ProgrammatiOn Orientée'));
 $question2->ajouterReponse(new Reponse('Programmation Orientée Objet', Reponse::BONNE_REPONSE));
 $question2->setExplications('Sans commentaires si vous avez eu faux :-°');
 $qcm->ajouterQuestion($question2, "question2", "question2");
+
+$qcm->setAppreciation(array('0-10' => 'Pas top du tout ...', '10-20' => 'Très bien ...'));
 
 echo $qcm->generer();
 var_dump($_POST);
