@@ -4,6 +4,7 @@ class Qcm
 {
     private string $form;
     private array $questions=[];
+    public integer $note;
 
     public function __construct()
     {
@@ -15,34 +16,67 @@ class Qcm
     public function ajouterQuestion(Question $question, string $id, string $name): void
     {
         $this->questions[] = $question;
-
     }
 
-
     //Suleyman : Coder méthode setAppreciation :
-    public function setAppreciation(array $notes)
-    {
-        foreach ($notes as $note) {
-            if ($note < 10) {
-                $this->form .= "<p>NUL !</p>";
-            } else {
-                $this->form .= "<p>BON !</p>";
-            }
+    public function setAppreciation(array $array){
+        if($this->note== 0){
+            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[0] ."</p>";
         }
+        if($this->note == 10){
+            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[5] ."</p>";
+        }
+        if($this->note == 20){
+            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[10] ."</p>";
+        }
+        if($this->note == 30){
+            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[15] ."</p>";
+        }
+        if($this->note == 40){
+            $this->form .= "<p>Note : ".$this->note/40*20 ."/20 " . $array[20] ."</p>";
+        }
+    }
+
+    public function ajouterpoint(){
+        $this->note += 10;
+        return $this->note;
     }
 
     //Fin code Suleyman
 
     public function generer()
     {
-        foreach ($this->questions as $questionSet){
-            $this->form .= "<br/><p>Question : " . $questionSet->getQuestion() . "</p>";
-            //var_dump($questionSet->getPropositions());
-            foreach($questionSet->getPropositions() as $propositionSet){
-                var_dump($propositionSet->getProposition());
-                $this->form .="<input name='".$questionSet->getQuestion()."' type='radio' value='".$propositionSet->getProposition()."'><label id='".$questionSet->getQuestion()."'>".$propositionSet->getProposition()."</label><br/>";
+        //var_dump($this->questions);
+
+        foreach ($this->questions as $key => $value){
+            $this->form .= "<br/><p>Question :".$value->getQuestion()."</p>";
+
+            foreach($value->getPropositions() as $propositionSet){
+                $this->form .="<input name='$key' type='radio' value='".$propositionSet->getProposition()."'><label id='$key'>".$propositionSet->getProposition()."</label><br/>";
+            }
+
+            if(isset($_POST) && !empty($_POST)){
+                foreach($_POST as $key => $value){
+
+                    foreach($this->questions as $key2 => $value2){
+                        if($key == $key2){
+                            //var_dump($value2->getPropositions());
+                            foreach($value2->getPropositions() as $propositionSet){
+                                if($value == $propositionSet->getProposition()){
+                                    var_dump($propositionSet->getProposition());
+                                    /**if($propositionSet->getValidation()){
+                                        $this->form.="<p>'".$value2->getExplication()."'</p>";
+                                    }else{
+                                        $this->form.="<p>Désolé, ce n'est pas la bonne réponse</p>";
+                                    }*/
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
+
 
 
         $this->form .= "
@@ -86,6 +120,11 @@ class Question
     public function getQuestion()
     {
         return $this->question;
+    }
+
+    public function getExplication()
+    {
+        return $this->explication;
     }
 
 }
@@ -133,7 +172,6 @@ $question2->setExplications('Sans commentaires si vous avez eu faux :-°');
 $qcm->ajouterQuestion($question2, "question2", "question2");
 
 echo $qcm->generer();
-echo '$_POST :' . var_dump($_POST);
 
 
 
