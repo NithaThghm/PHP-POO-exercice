@@ -8,34 +8,38 @@ class Artist
 
     use NameTrait;
     private string $nationality;
-    private DateTime $beginningYear;
-    private string $albums;
-    private array $style;
+    private int $beginningYear;
+    private array $albums = [];
+    private array $styles = [];
 
 
-
-    public function setNationality(string $nationality){
+    public function setNationality(string $nationality): void
+    {
         $this->nationality = $nationality;
-
     }
-    public function setBeginningYear(DateTime $year){
+
+    public function setBeginningYear(int $year): void
+    {
         $this->beginningYear = $year;
-
     }
-    public function addStyle(array $style){
-        $this->style[] = $style;
 
+    public function addStyle(Style $style): void
+    {
+        $this->styles[] = $style;
     }
 
     // GETTER
-    public function getNationality(){
+    public function getNationality(): string
+    {
         return $this->nationality;
     }
-    public function getBeginningYear(){
+    public function getBeginningYear(): int
+    {
         return $this->beginningYear;
     }
-    public function getStyle(){
-        return $this->style;
+    public function getStyle(): array
+    {
+        return $this->styles;
     }
 }
 
@@ -46,5 +50,6 @@ $artist1->setBeginningYear(1997);
 $artist1->addStyle($style1);
 $artist1->addStyle($style2);
 $artist1->addStyle($style3);
+
 
 var_dump($artist1);
