@@ -39,5 +39,4 @@ class Album
         return $this->songs;
     }
 
-
 }
