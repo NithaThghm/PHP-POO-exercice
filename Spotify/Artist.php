@@ -11,7 +11,7 @@ class Artist
     private $debutYear;
     private $albums;
     private $styles;
-    
+
 
 }
 
