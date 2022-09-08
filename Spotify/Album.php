@@ -1,13 +1,12 @@
 <?php
 
-include "./traits.php";
-
 class Album
 {
     use NameTrait;
     protected DateTime $year;
     protected float $prize;
     protected array $songs = [];
+    protected DateTime $duration;
 
     public function setDate(string $year): void
     {
@@ -19,7 +18,7 @@ class Album
         $this->prize = $prize;
     }
 
-    public function addSongs(Song $song): void
+    public function addSong(Song $song): void
     {
         $this->songs[]=$song;
     }
@@ -37,6 +36,19 @@ class Album
     public function getSongs(): array
     {
         return $this->songs;
+    }
+    public function getDuration($duration): DateTime
+    {
+        return $this->duration->format('H:i:s');
+    }
+
+    public function getAlbumTotalDuration()
+    {
+        foreach($this->songs as $song)
+        {
+            var_dump($song);
+            echo $song->getDuration();
+        }
     }
 
 }

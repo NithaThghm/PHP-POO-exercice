@@ -19,10 +19,3 @@ class User
 
     }
 }
-
-$user = new User();
-$date = new DateTime();
-$date->setDate(1992, 1, 1);
-$user->setBirthDate($date);
-echo $user->getAge();
-//var_dump((new DateTime())->diff($user->birthdate));

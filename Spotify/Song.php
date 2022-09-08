@@ -1,6 +1,7 @@
 <?php
 
 include "traits.php";
+include "./Artist.php";
 
 class Song
 {
@@ -9,6 +10,7 @@ class Song
     protected DateTime $duration;
     protected array $artists = [];
     protected array $albums = [];
+
 
 
     /**
@@ -48,8 +50,9 @@ class Song
         return $this->albums;
     }
 
-}
+    public function getDurationSec(){
+        return $this->duration->format('s') + ($this->duration->format('i') * 60);
+    }
 
-$song = new Song();
-$song->setDuration('00:06:37');
-var_dump($song->getDuration());
+
+}

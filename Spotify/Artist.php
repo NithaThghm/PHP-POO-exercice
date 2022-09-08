@@ -1,7 +1,4 @@
 <?php
-include 'traits.php';
-include 'Style.php';
-
 
 class Artist
 {
@@ -11,6 +8,13 @@ class Artist
     private int $beginningYear;
     private array $albums = [];
     private array $styles = [];
+
+    // method magique
+
+    public function __toString(): string
+    {
+        return $this->name . ' ' . $this->nationality . ' - ' . $this->beginningYear;
+    }
 
 
     public function setNationality(string $nationality): void
@@ -25,8 +29,9 @@ class Artist
 
     public function addStyle(Style $style): void
     {
-        $this->styles[] = $style;
+        $this->styles[] = $style->getName();
     }
+
 
     // GETTER
     public function getNationality(): string
@@ -37,19 +42,8 @@ class Artist
     {
         return $this->beginningYear;
     }
-    public function getStyle(): array
+    public function getStyles(): array
     {
         return $this->styles;
     }
 }
-
-$artist1 = new Artist();
-$artist1->setName('Suleyman');
-$artist1->setNationality('Turc');
-$artist1->setBeginningYear(1997);
-$artist1->addStyle($style1);
-$artist1->addStyle($style2);
-$artist1->addStyle($style3);
-
-
-var_dump($artist1);
