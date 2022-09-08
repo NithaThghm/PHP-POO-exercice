@@ -8,6 +8,8 @@ class Song
 
     protected DateTime $duration;
     protected array $artists = [];
+    protected array $albums = [];
+
 
     /**
      * $duration doit etre dans le format H:i:s
@@ -34,6 +36,16 @@ class Song
     public function getArtists(): array
     {
         return $this->artists;
+    }
+
+    public function setAlbums(Album $album): void
+    {
+        $this->albums[] = $album;
+    }
+
+    public function getAlbums(): array
+    {
+        return $this->albums;
     }
 
 }

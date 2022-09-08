@@ -1,5 +1,7 @@
 <?php
 
+include "./traits.php";
+
 class Style {
     use NameTrait;
 }
